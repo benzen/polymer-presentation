@@ -1,0 +1,16 @@
+<script src="http://www.polymer-project.org/polymer.min.js"></script>
+
+<polymer-element name="code3-button"
+                 noscript="noscript"
+                 attributes="color, text">
+  <template>
+    <style>
+      button { color: {{color}}; }
+    </style>
+    <button>{{text}}</button>
+  </template>
+
+
+</polymer-element>
+
+<code3-button text="hello" color="red"></code3-button>

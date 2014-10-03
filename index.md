@@ -12,7 +12,8 @@ Wikipedia.org: Polymer
 ---
 
 ## Objectif:
-Élément HTML sur mesure
+
+Éléments HTML sur mesure et réutilisables
 
 ## Moyen:
 Librairie( Web Components )
@@ -22,62 +23,92 @@ Librairie( Web Components )
 # Web Components ?
 
 * Template natifs
-* object.observe
+* Object.observe / 2 way data-binding
 * shadow dom
-* html import
 * custom element
+* html import
+
 
 ---
 
-# Concepts importants( Web Components )
+# Concepts importants
+## des Web Components
 
-* Tout peut être un element, visuel ou non
+* Tout peut être un élément, visuel ou non
 * css non invasif par défaut
-* les évènements ne sont pas mort
+* les évènements ne sont pas morts
 
 ---
 
-# Polymer Vs. Web components
+# Polymer Vs Web components
 
 * Polyfill
 * lib de "simplification"
 
 ---
 
-# Polymer Vs. Angular.js
+# Polymer Vs Angular.js
 
-    Polymer = Directive( Angular.js) - Angular.js
-
----
-
-# Elements non visuel
-
- * appel ajax
- * local-storage
- * routeur de page
- * back end complet
-
+    Polymer = Directives( Angular.js) - Angular.js
 
 ---
 
-# Un aire d'élément (ou l'inverse)
+# Éléments non visuels
 
-    polymer-element(name="code3-aire-text", noscript, \attributes="longueur, largeur")
+appel ajax
+
+    core-ajax(url="api.twitter.com", params='{"key":"val"}', method="GET", auto)
+
+local-storage
+
+    core-localstorage(name="code3" valeur="Égalitarisme")
+
+carte google maps
+
+    google-map(latitude="37.77493", longitude="-122.41942")
+
+routeur de page
+
+    app-router
+      app-route(path="/tracks/add", import="add-track.html")
+      app-route(path="/tracks/stats", import="stat-tracks.html")
+
+back end complet
+
+    code3-backend(api="https://api.code3.ca")
+
+
+---
+
+# Un aire d'élément
+##(ou l'inverse)
+
+    polymer-element(name="code3-aire-text", noscript,
+                    attributes="longueur, largeur")
       template
         {{longueur * largeur}}
+
+-
+
+    code3-aire-text(longueur=10, largeur=12)
+
+-
+
+    <code3-aire-text longueur=10 largeur=12> 120 </code3-aire-text>
 
 ---
 
 # Change d'aire
 
-    polymer-element(name="code3-aire-valeur", noscript, \attributes="longueur, largeur, aire")
+    polymer-element(name="code3-aire-valeur", noscript,
+                    attributes="longueur, largeur, aire")
       script.
         Polymer({
           longueurChanged:function(){
             computeAire()
           },
-          longueurChanged:function(){
-            computeAir()
+          largeurChanged:function(){
+            computeAire()
           },
           computeAire:function(){
             this.aire = this.largueur * this.longueur;
@@ -86,7 +117,7 @@ Librairie( Web Components )
 
 ---
 
-# Exemple d'appel ajax declaratif
+# Exemple d'appel ajax déclaratif
 
     polymer-element(name="code3-auto-save-form", noscript)
       template
@@ -103,32 +134,50 @@ Librairie( Web Components )
 
 # T'as l'air différent
 
-    polymer-element(name="code3-button", noscript, \attributes="color, text")
+    polymer-element(name="code3-button", noscript, attributes="color, text")
       template
+        style
+          button {
+            color: {{ color }};
+        }
         button {{text}}
-      style
-        button {
-          background-color: {{ color }};
-       }
 
 ---
 
-# Ca manque de logique tout ça !!
+#  Expression !== Js
+## mais...
+
+    core-item(label="Add", class="{{(selected=='add-track')?'core-selected':'' }}")
+
+---
+
+#  Filtre
+## à aire
+
+    {{employe.salaire | CAD}}
+
+-
+
+    {{exp | filtre( arg )}} === filtre: (exp, arg )-> ...
+
+---
+
+# Ça à pas l'air vrai !
 
     polymer-element(name="code3-click-counter")
       template
         button(label="click me", on-click="{{inc}}")
-        label Nombre de click
-          span#counterView
-
-      script.
-        Polymer({
-          counter:0,
-          inc:function(){
+        core-ajax#req(url="/api/counter", method="POST",
+                      params="{{ {counter: counter} }}")
+      script./* en coffee pour la conscision*/
+        Polymer
+          ready: ->
+            this.$.req.addEventListener "core-response", ->
+              console.log "YEAH !!! #{this.counter}"
+          counter: 0
+          inc: ->
             counter++
-            this.$.counterView.innerHtml = counter
-          }
-        })
+            this.$.req.go()
 
 
 ---
@@ -140,12 +189,18 @@ Librairie( Web Components )
 
 ---
 
-# Mes outils marchent encore ?
+# Répétition / conditionnelle
 
+    template(if="{{exp}}")
+    template(repeat="{{exp in exps}}")
 
 ---
 
-Option dev tools
+# Mes outils marchent encore ?
+
+---
+
+Options dev tools
 
 <img src="print-screen/devtools-options.png"/>
 
@@ -179,15 +234,18 @@ http://www.polymer-project.org/resources/compatibility.html
 # Alternatives à Polymer
 
 * Api natives
-* Firefox *x-tag* [xtags.org](xtags.org)
+* Mozilla *x-tag* [xtags.org](xtags.org)
 * Bosonic [bosonic.github.com](bosonic.github.com)
 
 ---
 
 # Ressources
 
-* Liste de web components: http://webcomponents.org/
-* Polymer: http://polymer-project.org
+* Liste de web components:
+  * [webcomponents.org](http://webcomponents.org/)
+  * [customelements.io](http://customelements.io/)
+* Polymer: [polymer-project.org](http://polymer-project.org)
+* html5rocks: [html5rocks.com](http://www.html5rocks.com/)
 
 ---
 
@@ -196,5 +254,3 @@ http://www.polymer-project.org/resources/compatibility.html
 [benjamin.dreux@code3.ca](mailto:benjamin.dreux@code3.ca)
 
 [@BenjaminDreux](https://twitter.com/BenjaminDreux)
-
----
